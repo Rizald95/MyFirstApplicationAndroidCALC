@@ -1,5 +1,17 @@
 class MainActivity : AppCompatActivity(), View.OnClickListener {
  
+	private lateinit var tvResult: TextView
+	private val resultLauncher = registerForActivityResult(
+		ActivityResultContracts.StartActivityForResult()
+	) {
+		if (result.resultCode == MoveForResultActivity.RESULT_CODE && result.data != null) {
+			val selectedValue = result.data?getIntExtra(MoveForResultActivity.EXTRA_SELECTED_VALUE, 0)
+			tvResult.text = "Hasil : $selectedValue"
+		}
+			
+		
+	}
+	
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -15,6 +27,11 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 		
 		val btnDialPhone: Button = findViewById(R.id.btn_dial_number)
 		btnDialPhone.setOnClickListener(this)
+		
+		val btnMoveForResult:Button = findViewById(R.id.btn_move_for_result)
+		btnMoveForResult.setOnClickListener(this)
+		
+		tvResult = findViewById(R.id.tv_result)
     }
  
     override fun onClick(v: View?) {
@@ -48,6 +65,12 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 				val phoneNumber = "081210841382"
 				val dialPhoneIntent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:$phoneNumber"))
 				startActivity(dialPhoneIntent)
+			}
+			
+			R.id.btn_move_for_result -> {
+				val moveForResultIntent = Intent(this@MainActivity, MoveForResultActivity::class.java)
+                resultLauncher.launch(moveForResultIntent)
+				
 			}
         }
     }
